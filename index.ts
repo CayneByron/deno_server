@@ -1,6 +1,7 @@
 import { Application, Router } from "https://deno.land/x/oak/mod.ts";
 import { config as env } from "https://deno.land/x/dotenv/mod.ts";
 import { Database, PostgresConnector } from 'https://deno.land/x/denodb/mod.ts';
+import { Account } from "./models/account.ts";
 import { Org } from "./models/org.ts";
 import { createOrg } from "./controllers/org.ts"; 
 
@@ -12,7 +13,7 @@ const connection = new PostgresConnector({
 });
 
 const db = new Database(connection);
-db.link([Org]);
+db.link([Org, Account]);
 await db.sync({drop: false});
 
 const router = new Router();

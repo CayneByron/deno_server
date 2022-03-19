@@ -1,7 +1,8 @@
-import { cryptoRandomString } from "https://github.com/piyush-bhatt/crypto-random-string/raw/main/mod.ts"
+import * as bcrypt from "https://deno.land/x/bcrypt/mod.ts";
 import { moment } from "https://deno.land/x/deno_moment/mod.ts";
 import { Org } from "../models/org.ts";
-import { sanitize } from "../utility.ts";
+import { Account } from "../models/account.ts";
+import { sanitize, getUniqueId, getRandomString } from "../utility.ts";
 import { validate, required, isNumber, isEmail, maxLength, isNumeric, isString } from "https://deno.land/x/validasaur/mod.ts";
 
 export async function createOrg(context: any) {
@@ -27,37 +28,41 @@ export async function createOrg(context: any) {
     let created_by = 'SYSTEM';
     let type = 'PRODUCTION';
 
-    while (true) {
-        let id = cryptoRandomString({length: 11, type: 'base64'}).replace(/\+/g, "-").replace(/\//g, "_");
-        try {
-            await Org.create({
-                id: id,
-                email: email,
-                name: input.name,
-                address1: input.address1,
-                address2: input.address2,
-                city: input.city,
-                state: input.state,
-                country: input.country,
-                postal_code: input.postal_code,
-                phone: input.phone,
-                created_on: created_on,
-                created_by: created_by,
-                type: type,
-                measurements: input.measurements,
-                is_deleted: false,
-            });
-            break;
-        } catch (e) {
-            console.log(e.message);
-            if (e.message === 'duplicate key value violates unique constraint "org_pkey"') {
-                continue;
-            }
-            error = e.message;
-            success = false;
-            break;
-        }
-    }
+    const orgId = getUniqueId('org');
+    await Org.create({
+        id: orgId,
+        email: email,
+        name: input.name,
+        address1: input.address1,
+        address2: input.address2,
+        city: input.city,
+        state: input.state,
+        country: input.country,
+        postal_code: input.postal_code,
+        phone: input.phone,
+        created_on: created_on,
+        created_by: created_by,
+        type: type,
+        measurements: input.measurements,
+        is_deleted: false,
+    });
+
+    const accountId = getUniqueId('account');
+    const hash = await bcrypt.hash(getRandomString(32));
+    await Account.create({
+        id: accountId,
+        email: email,
+        password_hash: hash,
+        name: input.name,
+        created_on: created_on,
+        created_by: created_by,
+        last_login: null,
+        org_id: orgId,
+        token: '',
+        token_expired: null,
+        is_activated:  false,
+        is_deleted: false,
+    });
 
     context.response.body = {success: success, error: error};
 }
