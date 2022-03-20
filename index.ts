@@ -5,6 +5,7 @@ import { Account } from "./models/account.ts";
 import { Org } from "./models/org.ts";
 import { createOrg } from "./controllers/org.ts"; 
 import { authTest } from "./controllers/test.ts"; 
+import { authenticate } from "./controllers/authentication.ts"; 
 
 const connection = new PostgresConnector({
     host: env().HOST,
@@ -23,7 +24,8 @@ router
         context.response.body = 'Deno Server!';
     })
     .post("/org", createOrg)
-    .post("/auth_test", authTest);
+    .post("/auth_test", authTest)
+    .post("/authenticate", authenticate);
 
 const app = new Application();
 app.use(router.routes());

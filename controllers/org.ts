@@ -74,7 +74,7 @@ export async function createOrg(context: any) {
         });
 
         account.exp = djwt.getNumericDate(60*60);
-        const jwt = await djwt.create({ alg: "HS512", typ: "JWT" }, account, env().SECRET)
+        const jwt = await djwt.create({ alg: "HS512", typ: "JWT" }, account, env().SECRET);
 
         context.response.body = {success: true, token: jwt, error: error};
     } catch (e) {
