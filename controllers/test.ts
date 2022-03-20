@@ -1,22 +1,17 @@
-import { validate, required, isNumber, isEmail, maxLength, isNumeric, isString, firstMessages } from "https://deno.land/x/validasaur/mod.ts";
-import * as djwt from "https://deno.land/x/djwt@v2.2/mod.ts";
-import { config as env } from "https://deno.land/x/dotenv/mod.ts";
+import { validateToken } from "../utility.ts"; 
+import { Result } from "../models/result.ts";
 
 export async function authTest(context: any) {
     try {
         const body = context.request.body({type: 'json'}); 
         const input = await body.value;
 
-        let [success, errors] = await validate(input, {
-            token: [required, isString],
-        });
+        let validationResult: Result = await validateToken(input.token);
+        if (!validationResult.isSuccess) throw validationResult.errors;
 
-        if (!success) throw Object.values(firstMessages(errors));
-
-        let payload = await djwt.verify(input.token, env().SECRET, "HS512")
-
-        context.response.body = {success: true, payload: payload, error: {}};
+        context.response.body = new Result(true, validationResult.body, null)
     } catch (e) {
-        context.response.body = {success: false, error: e};
+        context.response.body = new Result(false, null, e);
+        context.response.status = 400;
     }
 }

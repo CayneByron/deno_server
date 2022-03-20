@@ -21,7 +21,7 @@ await db.sync({drop: false});
 const router = new Router();
 router
     .get("/", async (context) => {
-        context.response.body = 'Deno Server!';
+        context.response.body = '{ "message":"Deno Server!" }';
     })
     .post("/org", createOrg)
     .post("/auth_test", authTest)

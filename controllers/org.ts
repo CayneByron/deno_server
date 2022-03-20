@@ -6,13 +6,14 @@ import { sanitize, getUniqueId, getRandomString } from "../utility.ts";
 import { validate, required, isNumber, isEmail, maxLength, isNumeric, isString, firstMessages } from "https://deno.land/x/validasaur/mod.ts";
 import * as djwt from "https://deno.land/x/djwt@v2.2/mod.ts";
 import { config as env } from "https://deno.land/x/dotenv/mod.ts";
+import { Result } from "../models/result.ts";
 
 export async function createOrg(context: any) {
     try {
         const body = context.request.body({type: 'json'}); 
         const dirtyInput = await body.value;
 
-        let [success, errors] = await validate(dirtyInput, {
+        let [isSuccess, errors] = await validate(dirtyInput, {
             email: [required, isString, isEmail, maxLength(512)],
             company_name: [required, isString, maxLength(512)],
             user_name: [required, isString, maxLength(512)],
@@ -27,7 +28,7 @@ export async function createOrg(context: any) {
             measurements: [required, isString, maxLength(512)],
         });
 
-        if (!success) throw Object.values(firstMessages(errors));
+        if (!isSuccess) throw Object.values(firstMessages(errors));
 
         const email = dirtyInput.email;
         const password = dirtyInput.password;
@@ -75,9 +76,9 @@ export async function createOrg(context: any) {
 
         account.exp = djwt.getNumericDate(60*60);
         const jwt = await djwt.create({ alg: "HS512", typ: "JWT" }, account, env().SECRET);
-        context.response.body = {success: true, token: jwt, errors: []};
+        context.response.body = new Result(true, jwt, null);
     } catch (e) {
-        context.response.body = {success: false, error: e};
+        context.response.body = new Result(false, null, e);
         context.response.status = 400;
     }
 }
