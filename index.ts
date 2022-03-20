@@ -4,6 +4,7 @@ import { Database, PostgresConnector } from 'https://deno.land/x/denodb/mod.ts';
 import { Account } from "./models/account.ts";
 import { Org } from "./models/org.ts";
 import { createOrg } from "./controllers/org.ts"; 
+import { authTest } from "./controllers/test.ts"; 
 
 const connection = new PostgresConnector({
     host: env().HOST,
@@ -21,7 +22,8 @@ router
     .get("/", async (context) => {
         context.response.body = 'Deno Server!';
     })
-    .post("/org", createOrg);
+    .post("/org", createOrg)
+    .post("/auth_test", authTest);
 
 const app = new Application();
 app.use(router.routes());
