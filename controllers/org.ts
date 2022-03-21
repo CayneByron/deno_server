@@ -37,7 +37,7 @@ export async function createOrg(context: any) {
         let created_by = 'SYSTEM';
         let type = 'PRODUCTION';
 
-        const orgId = getUniqueId('org');
+        const orgId = await getUniqueId(Org.table);
         await Org.create({
             id: orgId,
             email: email,
@@ -56,7 +56,7 @@ export async function createOrg(context: any) {
             is_deleted: false,
         });
 
-        const accountId = getUniqueId('account');
+        const accountId = await getUniqueId(Account.table);
         const hash = await bcrypt.hash(password);
         
         let account = await Account.create({

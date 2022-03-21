@@ -4,8 +4,8 @@ export class Result {
     errors: any;
 
     constructor(isSuccess: boolean, body: any, errors: any) {
-      this.isSuccess = isSuccess;
-      this.body = body;
-      this.errors = errors;
+        this.isSuccess = isSuccess;
+        this.body = body;
+        this.errors = errors;
     }
 }
