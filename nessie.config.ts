@@ -4,25 +4,16 @@ import {
     ClientSQLite,
     NessieConfig,
 } from "https://deno.land/x/nessie@2.0.5/mod.ts";
+import { config as env } from "https://deno.land/x/dotenv/mod.ts";
 
 /** Select one of the supported clients */
 const client = new ClientPostgreSQL({
-    database: "deno",
-    hostname: "localhost",
-    port: 5432,
-    user: "postgres",
-    password: "password",
+    database: env().DATABASE,
+    hostname: env().HOST,
+    port: env().PORT,
+    user: env().USERNAME,
+    password: env().PASSWORD,
 });
-
-// const client = new ClientMySQL({
-//     hostname: "localhost",
-//     port: 3306,
-//     username: "root",
-//     // password: "pwd", // uncomment this line for <8
-//     db: "nessie",
-// });
-
-// const client = new ClientSQLite("./sqlite.db");
 
 /** This is the final config object */
 const config: NessieConfig = {

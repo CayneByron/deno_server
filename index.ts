@@ -6,7 +6,6 @@ import { Org } from "./models/org.ts";
 import { createOrg } from "./controllers/org.ts"; 
 import { authTest } from "./controllers/test.ts"; 
 import { authenticate } from "./controllers/authentication.ts"; 
-import { Client } from "https://deno.land/x/postgres/mod.ts";
 
 const connection = new PostgresConnector({
     host: env().HOST,
