@@ -68,8 +68,6 @@ export async function createOrg(context: any) {
             created_by: created_by,
             last_login: null,
             org_id: orgId,
-            token: '',
-            token_expired: null,
             is_activated: false,
             is_deleted: false,
         });
