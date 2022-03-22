@@ -13,8 +13,6 @@ export class Account extends Model {
         created_by: DataTypes.TEXT,
         last_login: DataTypes.DATETIME,
         org_id: DataTypes.TEXT,
-        token: DataTypes.TEXT,
-        token_expired: DataTypes.DATETIME,
         is_activated:  DataTypes.BOOLEAN,
         is_deleted: DataTypes.BOOLEAN,
     };
