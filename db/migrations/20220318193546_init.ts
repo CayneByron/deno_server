@@ -33,8 +33,6 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
                 created_by text NOT NULL,
                 last_login timestamp without time zone,
                 org_id text NOT NULL,
-                token text NOT NULL,
-                token_expired timestamp without time zone,
                 is_activated boolean NOT NULL,
                 is_deleted boolean NOT NULL
             );
